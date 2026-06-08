@@ -5,10 +5,6 @@ pipeline {
         nodejs 'NodeJS'
     }
 
-    environment {
-        SONAR_TOKEN = credentials('sonar-token')
-    }
-
     stages {
 
         stage('Checkout') {
@@ -19,7 +15,6 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'node -v'
                 sh 'npm install'
             }
         }
@@ -40,8 +35,7 @@ pipeline {
                         ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=kanban-react-key \
                         -Dsonar.sources=src \
-                        -Dsonar.host.url=http://3.134.115.197:9000 \
-                        -Dsonar.login=${SONAR_TOKEN}
+                        -Dsonar.host.url=http://3.134.115.197:9000
                         """
                     }
                 }
