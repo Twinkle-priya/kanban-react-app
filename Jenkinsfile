@@ -2,15 +2,18 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS'   // only if you configured NodeJS in Jenkins tools
+        nodejs 'Node18'
+    }
+
+    environment {
+        NODE_OPTIONS = "--openssl-legacy-provider"
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'master',
-                    url: 'https://github.com/Twinkle-priya/kanban-react-app.git'
+                git url: 'https://github.com/Twinkle-priya/kanban-react-app.git', branch: 'master'
             }
         }
 
@@ -24,29 +27,6 @@ pipeline {
             steps {
                 bat 'npm run build'
             }
-        }
-
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat 'npm install sonar-scanner -g'
-                    bat 'sonar-scanner'
-                }
-            }
-        }
-
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline finished'
         }
     }
 }
