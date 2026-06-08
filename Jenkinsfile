@@ -28,9 +28,7 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo 'SonarQube stage placeholder (configure later)'
-                // If you configure Sonar later, you will replace this
-                // with withSonarQubeEnv + scanner command
+                echo 'SonarQube stage placeholder'
             }
         }
 
@@ -42,18 +40,11 @@ pipeline {
     }
 
     post {
-        always {
-            echo 'Cleaning workspace...'
-            // Optional but recommended on Windows
-            cleanWs()
-        }
-
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Build SUCCESS'
         }
-
         failure {
-            echo 'Pipeline failed!'
+            echo 'Build FAILED'
         }
     }
 }
