@@ -9,7 +9,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/Twinkle-priya/kanban-react-app.git'
+                git branch: 'master',
+                    url: 'https://github.com/Twinkle-priya/kanban-react-app.git'
             }
         }
 
@@ -28,6 +29,8 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo 'SonarQube stage placeholder (configure later)'
+                // If you configure Sonar later, you will replace this
+                // with withSonarQubeEnv + scanner command
             }
         }
 
@@ -39,9 +42,16 @@ pipeline {
     }
 
     post {
+        always {
+            echo 'Cleaning workspace...'
+            // Optional but recommended on Windows
+            cleanWs()
+        }
+
         success {
             echo 'Pipeline completed successfully!'
         }
+
         failure {
             echo 'Pipeline failed!'
         }
