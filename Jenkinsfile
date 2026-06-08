@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'ubuntu-agent' }
+    agent any
 
     tools {
         nodejs 'NodeJS'
@@ -15,13 +15,7 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'npm run build'
+                bat 'npm install'
             }
         }
 
@@ -31,10 +25,10 @@ pipeline {
                     def scannerHome = tool 'SonarScanner'
 
                     withSonarQubeEnv('SonarQube') {
-                        sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=kanban-react-key \
-                        -Dsonar.sources=src \
+                        bat """
+                        %scannerHome%\\bin\\sonar-scanner.bat ^
+                        -Dsonar.projectKey=kanban-react-key ^
+                        -Dsonar.sources=. ^
                         -Dsonar.host.url=http://3.134.115.197:9000
                         """
                     }
