@@ -1,8 +1,12 @@
 pipeline {
-    agent any
+    agent { label 'ubuntu-agent' }
 
     tools {
         nodejs 'NodeJS'
+    }
+
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -15,7 +19,14 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
+                sh 'node -v'
                 sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
             }
         }
 
@@ -28,8 +39,9 @@ pipeline {
                         sh """
                         ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=kanban-react-key \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://3.134.115.197:9000
+                        -Dsonar.sources=src \
+                        -Dsonar.host.url=http://3.134.115.197:9000 \
+                        -Dsonar.login=${SONAR_TOKEN}
                         """
                     }
                 }
