@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS'
+        nodejs 'NodeJS'   // only if you configured NodeJS in Jenkins tools
     }
 
     stages {
@@ -20,7 +20,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build React App') {
             steps {
                 bat 'npm run build'
             }
@@ -28,23 +28,25 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo 'SonarQube stage placeholder'
+                withSonarQubeEnv('SonarQube') {
+                    bat 'npm install sonar-scanner -g'
+                    bat 'sonar-scanner'
+                }
             }
         }
 
         stage('Quality Gate') {
             steps {
-                echo 'Quality Gate placeholder'
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
 
     post {
-        success {
-            echo 'Build SUCCESS'
-        }
-        failure {
-            echo 'Build FAILED'
+        always {
+            echo 'Pipeline finished'
         }
     }
 }
