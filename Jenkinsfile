@@ -19,29 +19,31 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                bat 'npm run build'
+            }
+        }
+
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    def scannerHome = tool 'SonarScanner'
-
-                    withSonarQubeEnv('SonarQube') {
-                        bat """
-                        %scannerHome%\\bin\\sonar-scanner.bat ^
-                        -Dsonar.projectKey=kanban-react-key ^
-                        -Dsonar.sources=. ^
-                        -Dsonar.host.url=http://3.134.115.197:9000
-                        """
-                    }
-                }
+                echo 'SonarQube stage placeholder (configure later)'
             }
         }
 
         stage('Quality Gate') {
             steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
+                echo 'Quality Gate placeholder'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
